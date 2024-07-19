@@ -35,6 +35,7 @@ const Dashboard = () => {
                                                     style={{ width: 120, height: 120, margin: '0 auto', borderRadius: '50%' }}
                                                 />
                                                 <Button component={Link} href='/update-profile'  variant="contained" sx={{marginTop:'1rem'}}>Update Profile</Button>
+                                                <Button component={Link} href='/change-password'  variant="contained" sx={{marginTop:'1rem'}}>Change Password</Button>
                                                 <Typography variant="h4" component="div" className="text-white" sx={{ marginTop: 3}}>{userdashboard?.first_name} {userdashboard?.last_name}</Typography>
                                                 <Typography className="text-white" sx={{color:'white'}}>Email - {userdashboard?.email}</Typography>
                                                 <Typography className="text-white" sx={{color:'white'}}>Contact No - {userdashboard?.phone}</Typography>

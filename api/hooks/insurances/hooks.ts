@@ -3,8 +3,10 @@ import { fetchCategories, fetchInsuranceDetails, fetchInsuranceList } from "./fu
 
 export const useInsuranceDetails = (id:any) => {
     const { data: insuranceDetails, isLoading, isError,refetch } = useQuery({
-        queryKey: ['insuranceDetails'],
-        queryFn:()=> fetchInsuranceDetails(id)
+        queryKey: ['insuranceDetails',id],
+        queryFn:()=> fetchInsuranceDetails(id),
+        // cacheTime: 0
+        
       });
 
       return {insuranceDetails , isLoading,isError,refetch}
@@ -12,26 +14,12 @@ export const useInsuranceDetails = (id:any) => {
 }
 
 
-export const useInsurancesMutation = () => {
-
-    const mutation = useMutation({
-        mutationKey:['insuranceslist'],
-        mutationFn: async (data: any) => {
-            const response = await fetchInsuranceList(data)
-            return response
-        },
-        onSuccess: (response) => {
-            console.log(response)
-          
-            
-        },
-        onError: (error) => {
-            console.log('insuraces list', error)
-    
-    
-        }
-    })
-    return mutation
+export const useInsurance=(data:any)=>{
+        const {data:insurance,isLoading,isError}=useQuery({
+            queryKey:["insuranceFetch",data],
+            queryFn:()=>fetchInsuranceList(data)
+        })
+        return {insurance,isLoading}
 }
 
 

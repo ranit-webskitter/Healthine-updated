@@ -1,22 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Wrapper from '@/layout/wrapper/wrapper'
-import { useEmptyCartMutation, useViewCart } from '@/api/hooks/cart/hooks'
+import { useEmptyCartMutation, useRemoveCartElementMutation, useViewCart } from '@/api/hooks/cart/hooks'
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { Box, Button, Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Divider, FormControl, Grid, InputLabel, Paper, Select, Typography } from '@mui/material'
 import Link from 'next/link';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DeleteIcon from '@mui/icons-material/Delete';
 const index = () => {
+    const [cart,setCart]=useState<any>()
     const { cartElement, isLoading, isError,refetch } = useViewCart()
+    useEffect(()=>{
+        if (!isLoading && !isError) {
+            setCart(cartElement);
+        }
+    },[cartElement,refetch,isLoading,isError])
+   
+    
     const mutation=useEmptyCartMutation()
+    const removeCartElemMutation=useRemoveCartElementMutation()
     const handleEmptyCart=()=>{
       
-        mutation.mutate({})
-        refetch().then(() => {
-            // Optionally force a re-render if necessary
-            // setRefreshFlag(prev => !prev);
-            console.log('Cart emptied and refetched');
-        });
+        mutation.mutate()
+        refetch()
+    }
+
+    const handleSingleCartDelete=(id:string)=>{
+        console.log(id)
+        removeCartElemMutation.mutate({"cartId":`${id}`})
+        // cartId
+
     }
     console.log('from cart', cartElement)
     return (
@@ -27,7 +39,7 @@ const index = () => {
                         <Button variant="contained" sx={{ backgroundColor: '#16a6df', borderRadius: '0' }} onClick={handleEmptyCart}>
                             <DeleteIcon /> Empty Cart
                         </Button>
-                        {cartElement?.userCarts.map((insuranceItem: { id: React.Key | null | undefined; insurance: { company_logo_path: string | undefined; insurance_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; short_desc: any; }; insurance_plan: { plan_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; price: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; benifit_array: (string | number | bigint | boolean | React.ReactPortal | Promise<React.AwaitedReactNode> | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined)[]; pdf_path: string | undefined; }; category: { insurance: { category_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; }; }; }) => (
+                        {cart?.userCarts?.map((insuranceItem: { id: React.Key | null | undefined; insurance: { company_logo_path: string | undefined; insurance_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; short_desc: any; }; insurance_plan: { plan_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; price: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; benifit_array: (string | number | bigint | boolean | React.ReactPortal | Promise<React.AwaitedReactNode> | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined)[]; pdf_path: string | undefined; }; category: { insurance: { category_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; }; }; }) => (
                             <Paper elevation={5} key={insuranceItem.id}>
 
                                 <Grid container spacing={2} sx={{ marginTop: '1rem', padding: '1rem' }}>
@@ -82,7 +94,7 @@ const index = () => {
                                     </Grid>
                                     <Grid item xs={12} md={2} xl={2}>
                                         <CardActions>
-                                            <Button variant="contained" sx={{ backgroundColor: '#16a6df', borderRadius: '0' }}>
+                                            <Button variant="contained" sx={{ backgroundColor: '#16a6df', borderRadius: '0' }} onClick={()=>handleSingleCartDelete(insuranceItem?.id)} >
                                                 <DeleteIcon />
                                             </Button>
                                             <Button component={Link} href={insuranceItem?.insurance_plan.pdf_path} target="_blank">
