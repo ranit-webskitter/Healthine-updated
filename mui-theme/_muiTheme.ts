@@ -385,7 +385,17 @@ export const MuiThemeOptions = (mode: PaletteMode): ThemeOptions => {
               
             })
           }
+    },
+    
+    MuiTypography:{
+      styleOverrides:{
+        root:{
+           color:'white'
+        }
+       
+      }
     }
     }
+     
   };
 };

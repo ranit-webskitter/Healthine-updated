@@ -1,75 +1,53 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { addToCartFunc, emptyCartFunc, fetchCartsFunc } from "./functions"
+import { addToCartFunc, addToCartSessionFunc, emptyCartFunc, fetchCartsFunc, fetchSessionCartsFunc, removeCartItemFunc } from "./functions"
 import { toast } from "sonner"
+import { string } from "yup";
 
-// export const useAddToCartMutation = () => {
-
-//     const mutation = useMutation({
-//         mutationKey:['addToCart'],
-//         mutationFn: async (data: any) => {
-//             const response = await addToCartFunc(data)
-//             return response
-//         },
-//         onSuccess: (response) => {
-//             console.log('from addtocart hook',response)
-            
-//            response?.statusCode===200 && toast.success(response?.message)
-          
-//            response?.statusCode===200 && fetchCartsFunc()
-//         },
-//         onError: (error :any) => {
-//             console.log('insuraces list', error)
-//             toast.error(error?.response?.data?.message)
-    
-    
-//         }
-//     })
-//     return mutation
-// }
 export const useAddToCartMutation = () => {
-    const queryClient = useQueryClient()
-    return useMutation({
-        mutationKey: ['addToCart'],
-        mutationFn: (body) => addToCartFunc(body),
-        onSuccess: (res) => {
-            console.log('abcdef',res);
-            toast.success(res?.message);
-            queryClient.invalidateQueries({
-                queryKey: ['fetchCart'],
-            })
-            
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationKey:['addToCart'],
+        mutationFn: async (data: any) => {
+            const response = await addToCartFunc(data)
+            return response
         },
-        onError: (err) => {
-            // console.log(err?.response?.data?.message);
-            // toast.error(err?.response?.data?.message)
+        onSuccess: (response) => {
+            console.log('from addtocart hook',response)
+            
+           response?.statusCode===200 && toast.success(response?.message)
+          
+           response?.statusCode===200 && fetchCartsFunc()
+           queryClient.invalidateQueries({queryKey:['cart']});
+
+        },
+        onError: (error :any) => {
+            console.log('insuraces list', error)
+            toast.error(error?.response?.data?.message)
+    
+    
         }
     })
+    return mutation
 }
+
 
 export const useViewCart=()=>{
     const {data: cartElement,isLoading,isError,refetch}=useQuery({
         queryKey:['cart'],
         queryFn:fetchCartsFunc
-        // queryFn:()=>fetchCartsFunc()
         
     })
-    console.log('from cart folder hooks page',cartElement?.userCarts?.length)
     return {cartElement,isLoading,isError,refetch}
 }
 
 export const useEmptyCartMutation = () => {
-
+    const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationKey:['emptyCart'],
-        mutationFn: async (data: any) => {
-            const response = await emptyCartFunc({})
-           return response
-        },
+        mutationFn:()=>emptyCartFunc({}),
         onSuccess: (response) => {
-            response?.data.statusCode===200 &&  console.log('from emptycart hook',response)
            response?.data.statusCode===200 && toast.success(response?.data.message)
-           response?.data.statusCode===200  && fetchCartsFunc()
-          
+           queryClient.invalidateQueries({queryKey:['cart']});
             
         },
         onError: (error :any) => {
@@ -81,3 +59,62 @@ export const useEmptyCartMutation = () => {
     })
     return mutation
 }
+
+export const useRemoveCartElementMutation = () => {
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationKey:['removeCartElement'],
+        mutationFn:(data:{cartId: string})=>removeCartItemFunc(data),
+        onSuccess: (response) => {
+           response?.data.statusCode===200 && toast.success(response?.data.message)
+           queryClient.invalidateQueries({queryKey:['cart']});
+            
+        },
+        onError: (error :any) => {
+            console.log('emptycart list', error)
+            // toast.error(error?.response?.data?.message)
+    
+    
+        }
+    })
+    return mutation
+}
+
+
+export const useAddToCartSessionMutation = () => {
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationKey:['addToCartSession'],
+        mutationFn: async (data: any) => {
+            const response = await addToCartSessionFunc(data)
+            return response
+        },
+        onSuccess: (response) => {
+            console.log('from addtocart hook',response)
+            
+           response?.statusCode===200 && toast.success(response?.message)
+          
+           response?.statusCode===200 && fetchCartsFunc()
+           queryClient.invalidateQueries({queryKey:['sessioncart',response?.data?.sessionId]});
+           fetchSessionCartsFunc(response?.data?.sessionId)
+        },
+        onError: (error :any) => {
+            console.log('insuraces list', error)
+            toast.error(error?.response?.data?.message)
+    
+    
+        }
+    })
+    return mutation
+}
+
+
+export const useViewSessionCart=(data:any)=>{
+    const {data: cartElement,isLoading,isError,refetch}=useQuery({
+        queryKey:['sessioncart'],
+        queryFn:()=>fetchSessionCartsFunc(data)
+        
+    })
+    return {cartElement,isLoading,isError,refetch}
+}
+

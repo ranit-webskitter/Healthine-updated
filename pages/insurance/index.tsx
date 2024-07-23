@@ -22,26 +22,22 @@ import { CardActionArea, CardActions } from '@mui/material';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import Link from 'next/link';
-import { useInsurancesMutation } from '@/api/hooks/insurances/hooks';
+import { useInsurance } from '@/api/hooks/insurances/hooks';
 import Sidebar from './sidebar';
 
 const Index = () => {
     const router = useRouter(); 
     const [selectedPlan, setSelectedPlan] = useState('');
-    const mutation = useInsurancesMutation();
-
-    useEffect(() => {
-        const fetchInsurances = async () => {
-            const queryCategory = router.query.category; 
-
-            const response = await mutation.mutate({
-                state_slug: null,
-                category_slug: queryCategory || null,
-                category_ids: null,
-            });
-        };
-        fetchInsurances();
-    }, [router.query.category]);
+    // const mutation = useInsurancesMutation();
+    const queryCategory = router.query.category;
+    const {insurance}=useInsurance({
+        state_slug: null,
+        category_slug: queryCategory || null,
+        category_ids: null,
+    })
+    console.log(insurance)
+   
+    
 
     const handleChange = (event: SelectChangeEvent<string>) => {
         setSelectedPlan(event.target.value);
@@ -52,8 +48,8 @@ const Index = () => {
             <Container sx={{ marginTop: '5rem' }} maxWidth="xl">
                 <Grid container spacing={2}>
                     <Grid item xs={12} md={9} xl={9}>
-                    <h3 style={{color:'black'}}>Total {mutation.data?.insuranceList.data.length} plans are there</h3>
-                        {mutation.data?.insuranceList.data.map((insuranceItem: { id: React.Key | null | undefined; company_logo_path: string | undefined; plans: any[]; insurance_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; category: { category_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; }; short_desc: any; pdf: string | undefined; }) => (
+                    <h3 style={{color:'black'}}>Total {insurance?.insuranceList.data.length} plans are there</h3>
+                        {insurance?.insuranceList.data.map((insuranceItem: { id: React.Key | null | undefined; company_logo_path: string | undefined; plans: any[]; insurance_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; category: { category_name: string | number | bigint | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<React.AwaitedReactNode> | null | undefined; }; short_desc: any; pdf: string | undefined; }) => (
                             <Paper elevation={5} key={insuranceItem.id}>
                                 
                                 <Grid container spacing={2} sx={{ marginTop: '1rem', padding: '1rem' }}>
