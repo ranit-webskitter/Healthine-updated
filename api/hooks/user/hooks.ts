@@ -2,7 +2,7 @@
 import { logout, setLoginData } from '@/rdux-toolkit/slices/userSlice'; 
 import { setCookie } from 'nookies';
 import { IFormInput } from '@/typescript/interface/common.interface'; 
-import {  MutationKey, useMutation, useQuery } from '@tanstack/react-query';
+import {  MutationKey, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { toast } from 'sonner';
 import { changePasswordMutation, fetchDashboard, forgotPasswordMutation, loginMutation, resetPasswordMutation, signUpMutation, updateProfileMutation } from './functions';
@@ -189,6 +189,7 @@ export const useProfileQuery = () => {
 }
 
 export const useUpdateProfileMutation = () => {
+  const queryClient = useQueryClient();
     const router=useRouter()
     const mutation = useMutation({
         mutationFn: async(data:IFormInput)=>{
@@ -199,6 +200,7 @@ export const useUpdateProfileMutation = () => {
             // console.log(response)
           response?.data.statusCode===200 && toast.success(response?.data?.message)
           response?.data.statusCode===200 && router.push('/dashboard')
+          queryClient.invalidateQueries({ queryKey: ["dashboard"]});
         },
         onError:(error)=>{
             console.log('from register',error)

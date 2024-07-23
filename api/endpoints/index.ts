@@ -30,8 +30,12 @@ export const endpoints = {
     insuranceDetails:'insurance',
     addToCart:'cart-add-update',
     viewCart:'carts',
-    emptyCart:'empty-cart'
-
+    emptyCart:'empty-cart',
+    addToCartSession: 'add-to-cart-session',
+    viewSessionCarts:'get-session-carts',
+    removeFromCart:'remove-from-cart',
+    createNewTicket:'create-new-ticket',
+    myTicket:'my-tickets'
 }
 }
 
@@ -52,6 +56,11 @@ export const sucessNotificationEndPoints = [
         endpoints.cms.insuranceDetails,
         endpoints.cms.addToCart,
         endpoints.cms.viewCart,
-        endpoints.cms.emptyCart
+        endpoints.cms.emptyCart,
+        endpoints.cms.removeFromCart,
+        endpoints.cms.addToCartSession,
+        endpoints.cms.viewSessionCarts,
+        endpoints.cms.createNewTicket,
+        endpoints.cms.myTicket
   
 ];

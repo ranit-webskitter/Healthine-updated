@@ -181,14 +181,14 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { InputLabel, MenuItem, Paper, Select } from '@mui/material'
+import { Grid, InputLabel, MenuItem, Paper, Select } from '@mui/material'
 import { ContactDataData, ContactRoot, contactState } from '@/typescript/interface/other-types'
+import SideBar from '@/pages/dashboard/sidebar'
 import { useContact } from '@/api/hooks/contact/hooks';
 const index = () => {
   const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<ContactDataData>();
@@ -215,6 +215,11 @@ const index = () => {
     <>
       <Wrapper>
         <>
+        <Grid container maxWidth='xl'>
+          <Grid xs={12} md={3} xl={3}>
+            <SideBar/>
+          </Grid>
+          <Grid xs={12} md={9} xl={9}>
           <Container component="main" maxWidth="xs" sx={{marginTop:'5rem'}}>
             <CssBaseline />
             <Paper elevation={3} style={{
@@ -234,8 +239,8 @@ const index = () => {
                 }}
               >
 
-                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                  <LockOutlinedIcon />
+                <Avatar sx={{ m: 1 ,bgcolor:'blue'}}>
+                  <LockOutlinedIcon  />
                 </Avatar>
 
                 <Typography component="h3" variant="h3" sx={{color:'black',fontWeight:'bolder'}} >
@@ -309,6 +314,9 @@ const index = () => {
               </Box>
             </Paper>
           </Container>
+          </Grid>
+        </Grid>
+        
         </>
       </Wrapper>
     </>
